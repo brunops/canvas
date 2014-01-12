@@ -31,7 +31,7 @@ window.onload = (function() {
 
     this.bindEvents();
 
-    setInterval(this.draw.bind(this), 500);
+    setInterval(this.tick.bind(this), 500);
   };
 
   BouncingBalls.prototype.bindEvents = function() {
@@ -40,6 +40,10 @@ window.onload = (function() {
     this.canvas.addEventListener('click', function(e) {
       self.add(e.pageX - self.canvas.offsetLeft, e.pageY - self.canvas.offsetTop, 5, 'red');
     });
+  };
+
+  BouncingBalls.prototype.tick = function() {
+    this.draw();
   };
 
   BouncingBalls.prototype.add = function(x, y, radius, color) {
