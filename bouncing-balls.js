@@ -10,8 +10,8 @@ window.onload = (function() {
     this.radius = radius;
     this.color = color;
 
-    this.verticalSpeed = Math.floor(Math.random() * 5) + 1;
-    this.horizontalSpeed = Math.floor(Math.random() * 5) + 1;
+    this.verticalSpeed = Math.floor(Math.random() * 3) + 2;
+    this.horizontalSpeed = Math.floor(Math.random() * 3) + 2;
 
     // up === true
     // down === false
@@ -73,7 +73,7 @@ window.onload = (function() {
 
     this.canvas.addEventListener('click', function(e) {
       var randomColor = BouncingBalls.colors[Math.floor(Math.random() * BouncingBalls.colors.length)];
-      self.add(e.pageX - self.canvas.offsetLeft, e.pageY - self.canvas.offsetTop, 5, randomColor);
+      self.add(e.pageX - self.canvas.offsetLeft, e.pageY - self.canvas.offsetTop, 10, randomColor);
     });
   };
 
@@ -87,13 +87,23 @@ window.onload = (function() {
   };
 
   BouncingBalls.prototype.handleNewCoords = function(ball) {
-    if (ball.x < 0
-        || ball.x > this.canvas.width) {
+    if (ball.x - ball.radius < 0) {
+      ball.x = ball.radius;
       ball.invertHorizontal();
     }
 
-    if (ball.y < 0
-        || ball.y > this.canvas.height) {
+    if (ball.x + ball.radius > this.canvas.width) {
+      ball.x = this.canvas.width - ball.radius;
+      ball.invertHorizontal();
+    }
+
+    if (ball.y - ball.radius < 0) {
+      ball.y = ball.radius;
+      ball.invertVertical();
+    }
+
+    if (ball.y + ball.radius > this.canvas.height) {
+      ball.y = this.canvas.height - ball.radius;
       ball.invertVertical();
     }
   };
