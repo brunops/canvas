@@ -23,6 +23,17 @@ window.onload = (function() {
     this.init();
   }
 
+  BouncingBalls.colors = [
+    'red',
+    'blue',
+    'indigo',
+    'papayawhip',
+    '#b4d455',
+    'slateblue',
+    '#333',
+    'orange'
+  ];
+
   BouncingBalls.prototype.init = function() {
     this.collection = [];
 
@@ -38,7 +49,9 @@ window.onload = (function() {
     var self = this;
 
     this.canvas.addEventListener('click', function(e) {
-      self.add(e.pageX - self.canvas.offsetLeft, e.pageY - self.canvas.offsetTop, 5, 'red');
+      var randomColor = BouncingBalls.colors[Math.floor(Math.random() * BouncingBalls.colors.length)];
+
+      self.add(e.pageX - self.canvas.offsetLeft, e.pageY - self.canvas.offsetTop, 5, randomColor);
     });
   };
 
