@@ -2,6 +2,14 @@
 <head>
   <meta charset="UTF-8">
   <title>Bouncing Balls</title>
+
+  <style>
+    .canvas-wrapper {
+      border: 5px solid black;
+      width: 500px;
+      margin: 0 auto;
+    }
+  </style>
 </head>
 <body>
   <pre>
@@ -12,7 +20,9 @@
 |_.__/ \___/ \__,_|_| |_|\___|_|_| |_|\__, | |_.__/ \__,_|_|_|___/
                                       |___/
   </pre>
-  <canvas id="canvas" width="500" height="500"></canvas>
+  <div class="canvas-wrapper">
+    <canvas id="canvas" width="500px" height="500px"></canvas>
+  </div>
 
   <script src="bouncing-balls.js"></script>
 </body>

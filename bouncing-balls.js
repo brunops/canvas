@@ -27,7 +27,6 @@ window.onload = (function() {
     'red',
     'blue',
     'indigo',
-    'papayawhip',
     '#b4d455',
     'slateblue',
     '#333',
@@ -50,7 +49,6 @@ window.onload = (function() {
 
     this.canvas.addEventListener('click', function(e) {
       var randomColor = BouncingBalls.colors[Math.floor(Math.random() * BouncingBalls.colors.length)];
-
       self.add(e.pageX - self.canvas.offsetLeft, e.pageY - self.canvas.offsetTop, 5, randomColor);
     });
   };
