@@ -47,13 +47,14 @@ window.onload = (function() {
   };
 
   BouncingBalls.prototype.add = function(x, y, radius, color) {
-    console.log(x, y, radius, color);
-    this.collection.push(new Ball(x, y, radius, color));
+    var newBall = new Ball(x, y, radius, color);
+    newBall.draw(this.context);
+
+    this.collection.push(newBall);
   };
 
   BouncingBalls.prototype.draw = function() {
     for (var i = 0; i < this.collection.length; ++i) {
-      console.log('draw', this.collection[i]);
       this.collection[i].draw(this.context);
     }
   };
