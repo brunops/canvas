@@ -75,7 +75,9 @@ window.onload = (function() {
     },
 
     tick: function() {
+      // this weird statement clears the canvas
       this.canvas.width = this.canvas.width;
+
       for (var i = 0; i < this.collection.length; ++i) {
         this.collection[i].tick();
         this.handleNewCoords(this.collection[i]);
