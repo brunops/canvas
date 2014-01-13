@@ -43,77 +43,75 @@ window.onload = (function() {
     this.y = this.y + (this.vertical ? - this.verticalSpeed : this.verticalSpeed);
   };
 
-  function BouncingBalls() {
-    this.init();
-  }
+  var BouncingBalls = {
+    colors: [
+      'red',
+      'blue',
+      'indigo',
+      '#b4d455',
+      'slateblue',
+      '#333',
+      'orange'
+    ],
 
-  BouncingBalls.colors = [
-    'red',
-    'blue',
-    'indigo',
-    '#b4d455',
-    'slateblue',
-    '#333',
-    'orange'
-  ];
+    init: function() {
+      this.collection = [];
 
-  BouncingBalls.prototype.init = function() {
-    this.collection = [];
+      this.canvas  = document.getElementById('canvas');
+      this.context = this.canvas.getContext('2d');
 
-    this.canvas  = document.getElementById('canvas');
-    this.context = this.canvas.getContext('2d');
+      this.bindEvents();
 
-    this.bindEvents();
+      setInterval(this.tick.bind(this), 20);
+    },
 
-    setInterval(this.tick.bind(this), 20);
-  };
+    bindEvents: function() {
+      var self = this;
 
-  BouncingBalls.prototype.bindEvents = function() {
-    var self = this;
+      this.canvas.addEventListener('click', function(e) {
+        var randomColor = BouncingBalls.colors[Math.floor(Math.random() * BouncingBalls.colors.length)];
+        self.add(e.pageX - self.canvas.offsetLeft, e.pageY - self.canvas.offsetTop, 10, randomColor);
+      });
+    },
 
-    this.canvas.addEventListener('click', function(e) {
-      var randomColor = BouncingBalls.colors[Math.floor(Math.random() * BouncingBalls.colors.length)];
-      self.add(e.pageX - self.canvas.offsetLeft, e.pageY - self.canvas.offsetTop, 10, randomColor);
-    });
-  };
+    tick: function() {
+      this.canvas.width = this.canvas.width;
+      for (var i = 0; i < this.collection.length; ++i) {
+        this.collection[i].tick();
+        this.handleNewCoords(this.collection[i]);
+        this.collection[i].draw(this.context);
+      }
+    },
 
-  BouncingBalls.prototype.tick = function() {
-    this.canvas.width = this.canvas.width;
-    for (var i = 0; i < this.collection.length; ++i) {
-      this.collection[i].tick();
-      this.handleNewCoords(this.collection[i]);
-      this.collection[i].draw(this.context);
+    handleNewCoords: function(ball) {
+      if (ball.x - ball.radius < 0) {
+        ball.x = ball.radius;
+        ball.invertHorizontal();
+      }
+
+      if (ball.x + ball.radius > this.canvas.width) {
+        ball.x = this.canvas.width - ball.radius;
+        ball.invertHorizontal();
+      }
+
+      if (ball.y - ball.radius < 0) {
+        ball.y = ball.radius;
+        ball.invertVertical();
+      }
+
+      if (ball.y + ball.radius > this.canvas.height) {
+        ball.y = this.canvas.height - ball.radius;
+        ball.invertVertical();
+      }
+    },
+
+    add: function(x, y, radius, color) {
+      var newBall = new Ball(x, y, radius, color);
+      newBall.draw(this.context);
+
+      this.collection.push(newBall);
     }
   };
 
-  BouncingBalls.prototype.handleNewCoords = function(ball) {
-    if (ball.x - ball.radius < 0) {
-      ball.x = ball.radius;
-      ball.invertHorizontal();
-    }
-
-    if (ball.x + ball.radius > this.canvas.width) {
-      ball.x = this.canvas.width - ball.radius;
-      ball.invertHorizontal();
-    }
-
-    if (ball.y - ball.radius < 0) {
-      ball.y = ball.radius;
-      ball.invertVertical();
-    }
-
-    if (ball.y + ball.radius > this.canvas.height) {
-      ball.y = this.canvas.height - ball.radius;
-      ball.invertVertical();
-    }
-  };
-
-  BouncingBalls.prototype.add = function(x, y, radius, color) {
-    var newBall = new Ball(x, y, radius, color);
-    newBall.draw(this.context);
-
-    this.collection.push(newBall);
-  };
-
-  new BouncingBalls();
+  BouncingBalls.init();
 })();
