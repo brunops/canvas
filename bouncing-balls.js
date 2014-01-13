@@ -54,9 +54,9 @@ window.onload = (function() {
       'orange'
     ],
 
-    init: function() {
-      BouncingBalls.collection = [];
+    collection: [],
 
+    init: function() {
       BouncingBalls.canvas  = document.getElementById('canvas');
       BouncingBalls.context = BouncingBalls.canvas.getContext('2d');
 
