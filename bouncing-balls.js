@@ -69,8 +69,12 @@ window.onload = (function() {
       var self = this;
 
       this.canvas.addEventListener('click', function(e) {
-        var randomColor = BouncingBalls.colors[Math.floor(Math.random() * BouncingBalls.colors.length)];
-        self.add(e.pageX - self.canvas.offsetLeft, e.pageY - self.canvas.offsetTop, 10, randomColor);
+        var randomColor = BouncingBalls.colors[Math.floor(Math.random() * BouncingBalls.colors.length)],
+            rect = e.target.getBoundingClientRect(),
+            x = e.offsetX || e.pageX - rect.left - window.scrollX,
+            y = e.offsetY || e.pageY - rect.top - window.scrollY;
+
+        self.add(x, y, 10, randomColor);
       });
     },
 
