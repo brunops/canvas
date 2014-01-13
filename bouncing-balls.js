@@ -62,7 +62,7 @@ window.onload = (function() {
 
       BouncingBalls.bindEvents();
 
-      setInterval(BouncingBalls.tick.bind(BouncingBalls), 20);
+      setInterval(BouncingBalls.tick, 20);
     },
 
     bindEvents: function() {
