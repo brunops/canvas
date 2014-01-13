@@ -55,37 +55,35 @@ window.onload = (function() {
     ],
 
     init: function() {
-      this.collection = [];
+      BouncingBalls.collection = [];
 
-      this.canvas  = document.getElementById('canvas');
-      this.context = this.canvas.getContext('2d');
+      BouncingBalls.canvas  = document.getElementById('canvas');
+      BouncingBalls.context = BouncingBalls.canvas.getContext('2d');
 
-      this.bindEvents();
+      BouncingBalls.bindEvents();
 
-      setInterval(this.tick.bind(this), 20);
+      setInterval(BouncingBalls.tick.bind(BouncingBalls), 20);
     },
 
     bindEvents: function() {
-      var self = this;
-
-      this.canvas.addEventListener('click', function(e) {
+      BouncingBalls.canvas.addEventListener('click', function(e) {
         var randomColor = BouncingBalls.colors[Math.floor(Math.random() * BouncingBalls.colors.length)],
             rect = e.target.getBoundingClientRect(),
             x = e.offsetX || e.pageX - rect.left - window.scrollX,
             y = e.offsetY || e.pageY - rect.top - window.scrollY;
 
-        self.add(x, y, 10, randomColor);
+        BouncingBalls.add(x, y, 10, randomColor);
       });
     },
 
     tick: function() {
       // this weird statement clears the canvas
-      this.canvas.width = this.canvas.width;
+      BouncingBalls.canvas.width = BouncingBalls.canvas.width;
 
-      for (var i = 0; i < this.collection.length; ++i) {
-        this.collection[i].tick();
-        this.handleNewCoords(this.collection[i]);
-        this.collection[i].draw(this.context);
+      for (var i = 0; i < BouncingBalls.collection.length; ++i) {
+        BouncingBalls.collection[i].tick();
+        BouncingBalls.handleNewCoords(BouncingBalls.collection[i]);
+        BouncingBalls.collection[i].draw(BouncingBalls.context);
       }
     },
 
@@ -95,8 +93,8 @@ window.onload = (function() {
         ball.invertHorizontal();
       }
 
-      if (ball.x + ball.radius > this.canvas.width) {
-        ball.x = this.canvas.width - ball.radius;
+      if (ball.x + ball.radius > BouncingBalls.canvas.width) {
+        ball.x = BouncingBalls.canvas.width - ball.radius;
         ball.invertHorizontal();
       }
 
@@ -105,17 +103,17 @@ window.onload = (function() {
         ball.invertVertical();
       }
 
-      if (ball.y + ball.radius > this.canvas.height) {
-        ball.y = this.canvas.height - ball.radius;
+      if (ball.y + ball.radius > BouncingBalls.canvas.height) {
+        ball.y = BouncingBalls.canvas.height - ball.radius;
         ball.invertVertical();
       }
     },
 
     add: function(x, y, radius, color) {
       var newBall = new Ball(x, y, radius, color);
-      newBall.draw(this.context);
+      newBall.draw(BouncingBalls.context);
 
-      this.collection.push(newBall);
+      BouncingBalls.collection.push(newBall);
     }
   };
 
