@@ -61,7 +61,7 @@ window.onload = (function() {
     this.collection = [];
 
     this.canvas  = document.getElementById('canvas');
-    this.context = canvas.getContext('2d');
+    this.context = this.canvas.getContext('2d');
 
     this.bindEvents();
 
@@ -78,7 +78,7 @@ window.onload = (function() {
   };
 
   BouncingBalls.prototype.tick = function() {
-    canvas.width = canvas.width;
+    this.canvas.width = this.canvas.width;
     for (var i = 0; i < this.collection.length; ++i) {
       this.collection[i].tick();
       this.handleNewCoords(this.collection[i]);
