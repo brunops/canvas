@@ -1,4 +1,13 @@
-window.onload = (function() {
+window.requestAnimFrame = (function(){
+  return  window.requestAnimationFrame       ||
+          window.webkitRequestAnimationFrame ||
+          window.mozRequestAnimationFrame    ||
+          function( callback ){
+            window.setTimeout(callback, 1000 / 60);
+          };
+})();
+
+(function() {
 
   function Ball(x, y, radius, color) {
     this.init(x, y, radius, color);
@@ -10,16 +19,14 @@ window.onload = (function() {
     this.radius = radius;
     this.color = color;
 
-    this.verticalSpeed = Math.floor(Math.random() * 3) + 2;
-    this.horizontalSpeed = Math.floor(Math.random() * 3) + 2;
+    this.verticalSpeed = Math.floor(Math.random() * 3) + 1;
+    this.horizontalSpeed = Math.floor(Math.random() * 3) + 1;
 
-    // up === true
-    // down === false
-    this.vertical = Math.floor(Math.random() * 2) === 1;
+    // up or down
+    this.verticalSpeed *= Math.floor(Math.random() * 2) === 1 ? 1 : -1;
 
-    // right ===  true
-    // left === false
-    this.horizontal = Math.floor(Math.random() * 2) === 1;
+    // left or right
+    this.horizontalSpeed *= Math.floor(Math.random() * 2) === 1 ? 1 : -1;
   };
 
   Ball.prototype.draw = function(context) {
@@ -31,16 +38,44 @@ window.onload = (function() {
   };
 
   Ball.prototype.invertVertical = function() {
-    this.vertical = !this.vertical;
+    this.verticalSpeed *= -1;
   };
 
   Ball.prototype.invertHorizontal = function() {
-    this.horizontal = !this.horizontal;
+    this.horizontalSpeed *= -1;
   };
 
   Ball.prototype.tick = function() {
-    this.x = this.x + (this.horizontal ? this.horizontalSpeed : - this.horizontalSpeed);
-    this.y = this.y + (this.vertical ? - this.verticalSpeed : this.verticalSpeed);
+    this.x = this.x + this.horizontalSpeed;
+    this.y = this.y + this.verticalSpeed;
+  };
+
+  function Particle(x, y, radius, color) {
+    this.init(x, y, radius, color);
+  }
+  // Inherit from Ball
+  Particle.prototype = new Ball();
+
+  Particle.prototype.init = function(x, y, radius, color) {
+    Ball.prototype.init.call(this, x, y, radius, color);
+
+    this.horizontalSpeed = (Math.floor(Math.random() * 1500)) / 1000;
+    this.verticalSpeed = (Math.floor(Math.random() * 1300)) / 1000;
+    this.horizontalSpeed *= Math.floor(Math.random() * 2) === 1 ? 1 : -1;
+    this.verticalSpeed *= Math.floor(Math.random() * 2) === 1 ? 1 : -1;
+  };
+
+  // Define some constants
+  // Particles are subjected to a bit more physics
+  Particle.prototype.gravity = 0.05;
+  Particle.prototype.horizontalSpeedDecreaseRate = 0.98;
+
+  Particle.prototype.tick = function() {
+    this.x = this.x + this.horizontalSpeed;
+    this.y = this.y + this.verticalSpeed;
+
+    this.horizontalSpeed *= this.horizontalSpeedDecreaseRate;
+    this.verticalSpeed += this.gravity;
   };
 
   var BouncingBalls = {
@@ -54,7 +89,11 @@ window.onload = (function() {
       'orange'
     ],
 
-    collection: [],
+    balls: [],
+
+    particles: [],
+
+    particlesPerExplosion: 25,
 
     init: function() {
       BouncingBalls.canvas  = document.getElementById('canvas');
@@ -62,7 +101,12 @@ window.onload = (function() {
 
       BouncingBalls.bindEvents();
 
-      setInterval(BouncingBalls.tick, 20);
+      BouncingBalls.startAnimateLoop();
+    },
+
+    startAnimateLoop: function() {
+      requestAnimFrame(BouncingBalls.startAnimateLoop);
+      BouncingBalls.tick();
     },
 
     bindEvents: function() {
@@ -80,14 +124,32 @@ window.onload = (function() {
       // this weird statement clears the canvas
       BouncingBalls.canvas.width = BouncingBalls.canvas.width;
 
-      for (var i = 0; i < BouncingBalls.collection.length; ++i) {
-        BouncingBalls.collection[i].tick();
-        BouncingBalls.handleNewCoords(BouncingBalls.collection[i]);
-        BouncingBalls.collection[i].draw(BouncingBalls.context);
+      // Balls
+      for (var i = 0; i < BouncingBalls.balls.length; ++i) {
+        BouncingBalls.balls[i].tick();
+        BouncingBalls.handleNewCoords(BouncingBalls.balls[i], i);
+        BouncingBalls.balls[i].draw(BouncingBalls.context);
+      }
+
+      // POW!
+      BouncingBalls.explodeCollidedBalls();
+
+      // Particles
+      var particlesToRemove = 0;
+      for (var i = 0; i < BouncingBalls.particles.length; ++i) {
+        BouncingBalls.particles[i].tick();
+        BouncingBalls.particles[i].draw(BouncingBalls.context);
+        if (particlesToRemove === i && BouncingBalls.particles[i].y > BouncingBalls.canvas.height) {
+          particlesToRemove++;
+        }
+      }
+
+      if (particlesToRemove) {
+        BouncingBalls.particles.splice(0, particlesToRemove);
       }
     },
 
-    handleNewCoords: function(ball) {
+    handleNewCoords: function(ball, index) {
       if (ball.x - ball.radius < 0) {
         ball.x = ball.radius;
         ball.invertHorizontal();
@@ -109,13 +171,59 @@ window.onload = (function() {
       }
     },
 
+    explodeCollidedBalls: function() {
+      var collidedBallsIndex = BouncingBalls.collidedBallsIndex();
+
+      for (var i = collidedBallsIndex.length - 1; i >= 0; --i) {
+        BouncingBalls.explodeBall(collidedBallsIndex[i]);
+      }
+    },
+
+    explodeBall: function(index) {
+      var ball = BouncingBalls.balls[index];
+
+      for (var i = 0; i < BouncingBalls.particlesPerExplosion; i++) {
+        BouncingBalls.particles.push(new Particle(ball.x, ball.y, 1, ball.color));
+      }
+
+      delete BouncingBalls.balls.splice(index, 1);
+    },
+
+    collidedBallsIndex: function() {
+      var collidedBalls = {},
+          balls = BouncingBalls.balls;
+
+      for (var i = 0; i < BouncingBalls.balls.length; ++i) {
+        for (var j = i + 1; j < BouncingBalls.balls.length; j++)  {
+          if (BouncingBalls.areColliding(balls[i], balls[j])) {
+            collidedBalls[i] = i;
+            collidedBalls[j] = j;
+          }
+        }
+      }
+
+      return Object.keys(collidedBalls).sort(function(a, b) { return a - b; });
+    },
+
+    areColliding: function(ball1, ball2) {
+      var collided = false,
+          distance = Math.sqrt(Math.pow(ball1.x - ball2.x, 2) + Math.pow(ball1.y - ball2.y, 2));
+
+      if (distance <= ball1.radius * 2) {
+        collided = true;
+      }
+
+      return collided;
+    },
+
     add: function(x, y, radius, color) {
       var newBall = new Ball(x, y, radius, color);
-      newBall.draw(BouncingBalls.context);
 
-      BouncingBalls.collection.push(newBall);
+      newBall.draw(BouncingBalls.context);
+      BouncingBalls.balls.push(newBall);
     }
   };
 
   BouncingBalls.init();
+
 })();
