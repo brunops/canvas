@@ -138,10 +138,17 @@ window.onload = (function() {
     },
 
     add: function(x, y, radius, color) {
-      var newBall = new Ball(x, y, radius, color);
-      newBall.draw(BouncingBalls.context);
 
-      BouncingBalls.collection.push(newBall);
+      var newBall = new Ball(x, y, radius, color);
+
+      if ( !BouncingBalls.hasBallCollided(newBall) ) {
+        newBall.draw(BouncingBalls.context);
+        BouncingBalls.collection.push(newBall);
+      }
+      else {
+        delete newBall;
+      }
+
     }
   };
 
