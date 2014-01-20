@@ -91,6 +91,10 @@ window.requestAnimFrame = (function(){
 
     balls: [],
 
+    particles: [],
+
+    particlesPerExplosion: 25,
+
     init: function() {
       BouncingBalls.canvas  = document.getElementById('canvas');
       BouncingBalls.context = BouncingBalls.canvas.getContext('2d');
@@ -120,14 +124,32 @@ window.requestAnimFrame = (function(){
       // this weird statement clears the canvas
       BouncingBalls.canvas.width = BouncingBalls.canvas.width;
 
+      // Balls
       for (var i = 0; i < BouncingBalls.balls.length; ++i) {
         BouncingBalls.balls[i].tick();
-        BouncingBalls.handleNewCoords(BouncingBalls.balls[i]);
+        BouncingBalls.handleNewCoords(BouncingBalls.balls[i], i);
         BouncingBalls.balls[i].draw(BouncingBalls.context);
+      }
+
+      // POW!
+      BouncingBalls.explodeCollidedBalls();
+
+      // Particles
+      var particlesToRemove = 0;
+      for (var i = 0; i < BouncingBalls.particles.length; ++i) {
+        BouncingBalls.particles[i].tick();
+        BouncingBalls.particles[i].draw(BouncingBalls.context);
+        if (particlesToRemove === i && BouncingBalls.particles[i].y > BouncingBalls.canvas.height) {
+          particlesToRemove++;
+        }
+      }
+
+      if (particlesToRemove) {
+        BouncingBalls.particles.splice(0, particlesToRemove);
       }
     },
 
-    handleNewCoords: function(ball) {
+    handleNewCoords: function(ball, index) {
       if (ball.x - ball.radius < 0) {
         ball.x = ball.radius;
         ball.invertHorizontal();
@@ -147,23 +169,40 @@ window.requestAnimFrame = (function(){
         ball.y = BouncingBalls.canvas.height - ball.radius;
         ball.invertVertical();
       }
+    },
 
-      if (BouncingBalls.hasBallCollided(ball)) {
-        // POW!
-        ball.invertHorizontal();
-        ball.invertVertical();
+    explodeCollidedBalls: function() {
+      var collidedBallsIndex = BouncingBalls.collidedBallsIndex();
+
+      for (var i = collidedBallsIndex.length - 1; i >= 0; --i) {
+        BouncingBalls.explodeBall(collidedBallsIndex[i]);
       }
     },
 
-    hasBallCollided: function(ball) {
+    explodeBall: function(index) {
+      var ball = BouncingBalls.balls[index];
+
+      for (var i = 0; i < BouncingBalls.particlesPerExplosion; i++) {
+        BouncingBalls.particles.push(new Particle(ball.x, ball.y, 1, ball.color));
+      }
+
+      delete BouncingBalls.balls.splice(index, 1);
+    },
+
+    collidedBallsIndex: function() {
+      var collidedBalls = {},
+          balls = BouncingBalls.balls;
+
       for (var i = 0; i < BouncingBalls.balls.length; ++i) {
-        if (ball !== BouncingBalls.balls[i]
-          && BouncingBalls.areColliding(ball, BouncingBalls.balls[i])) {
-            return true;
+        for (var j = i + 1; j < BouncingBalls.balls.length; j++)  {
+          if (BouncingBalls.areColliding(balls[i], balls[j])) {
+            collidedBalls[i] = i;
+            collidedBalls[j] = j;
+          }
         }
       }
 
-      return false;
+      return Object.keys(collidedBalls).sort(function(a, b) { return a - b; });
     },
 
     areColliding: function(ball1, ball2) {
@@ -178,19 +217,13 @@ window.requestAnimFrame = (function(){
     },
 
     add: function(x, y, radius, color) {
-
       var newBall = new Ball(x, y, radius, color);
 
-      if ( !BouncingBalls.hasBallCollided(newBall) ) {
-        newBall.draw(BouncingBalls.context);
-        BouncingBalls.balls.push(newBall);
-      }
-      else {
-        delete newBall;
-      }
-
+      newBall.draw(BouncingBalls.context);
+      BouncingBalls.balls.push(newBall);
     }
   };
 
   BouncingBalls.init();
+
 })();
