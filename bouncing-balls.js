@@ -50,6 +50,32 @@ window.requestAnimFrame = (function(){
     this.y = this.y + this.verticalSpeed;
   };
 
+  function Particle(x, y, radius, color) {
+    this.init(x, y, radius, color);
+  }
+  // Inherit from Ball
+  Particle.prototype = new Ball();
+
+  Particle.prototype.init = function(x, y, radius, color, createdAt) {
+    Ball.prototype.init.call(this, x, y, radius, color);
+
+    this.createdAt = createdAt || Date.now();
+  };
+
+  // Define some constants
+  // Particles are subjected to a bit more physics
+  Particle.prototype.gravity = 1.3;
+  Particle.prototype.horizontalSpeedDecreaseRate = 0.3;
+  Particle.prototype.lifespan = 1000;
+
+  Particle.prototype.tick = function() {
+    this.x = this.x + this.horizontalSpeed;
+    this.y = this.y + this.verticalSpeed;
+
+    this.horizontalSpeed *= this.horizontalSpeedDecreaseRate;
+    this.verticalSpeed *= this.gravity;
+  };
+
   var BouncingBalls = {
     colors: [
       'red',
