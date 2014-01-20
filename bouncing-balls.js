@@ -107,6 +107,34 @@ window.onload = (function() {
         ball.y = BouncingBalls.canvas.height - ball.radius;
         ball.invertVertical();
       }
+
+      if (BouncingBalls.hasBallCollided(ball)) {
+        // POW!
+        ball.invertHorizontal();
+        ball.invertVertical();
+      }
+    },
+
+    hasBallCollided: function(ball) {
+      for (var i = 0; i < BouncingBalls.collection.length; ++i) {
+        if (ball !== BouncingBalls.collection[i]
+          && BouncingBalls.areColliding(ball, BouncingBalls.collection[i])) {
+            return true;
+        }
+      }
+
+      return false;
+    },
+
+    areColliding: function(ball1, ball2) {
+      var collided = false,
+          distance = Math.sqrt(Math.pow(ball1.x - ball2.x, 2) + Math.pow(ball1.y - ball2.y, 2));
+
+      if (distance <= ball1.radius * 2) {
+        collided = true;
+      }
+
+      return collided;
     },
 
     add: function(x, y, radius, color) {
