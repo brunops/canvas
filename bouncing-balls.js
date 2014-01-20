@@ -61,7 +61,7 @@ window.requestAnimFrame = (function(){
       'orange'
     ],
 
-    collection: [],
+    balls: [],
 
     init: function() {
       BouncingBalls.canvas  = document.getElementById('canvas');
@@ -92,10 +92,10 @@ window.requestAnimFrame = (function(){
       // this weird statement clears the canvas
       BouncingBalls.canvas.width = BouncingBalls.canvas.width;
 
-      for (var i = 0; i < BouncingBalls.collection.length; ++i) {
-        BouncingBalls.collection[i].tick();
-        BouncingBalls.handleNewCoords(BouncingBalls.collection[i]);
-        BouncingBalls.collection[i].draw(BouncingBalls.context);
+      for (var i = 0; i < BouncingBalls.balls.length; ++i) {
+        BouncingBalls.balls[i].tick();
+        BouncingBalls.handleNewCoords(BouncingBalls.balls[i]);
+        BouncingBalls.balls[i].draw(BouncingBalls.context);
       }
     },
 
@@ -128,9 +128,9 @@ window.requestAnimFrame = (function(){
     },
 
     hasBallCollided: function(ball) {
-      for (var i = 0; i < BouncingBalls.collection.length; ++i) {
-        if (ball !== BouncingBalls.collection[i]
-          && BouncingBalls.areColliding(ball, BouncingBalls.collection[i])) {
+      for (var i = 0; i < BouncingBalls.balls.length; ++i) {
+        if (ball !== BouncingBalls.balls[i]
+          && BouncingBalls.areColliding(ball, BouncingBalls.balls[i])) {
             return true;
         }
       }
@@ -155,7 +155,7 @@ window.requestAnimFrame = (function(){
 
       if ( !BouncingBalls.hasBallCollided(newBall) ) {
         newBall.draw(BouncingBalls.context);
-        BouncingBalls.collection.push(newBall);
+        BouncingBalls.balls.push(newBall);
       }
       else {
         delete newBall;
