@@ -1,4 +1,13 @@
-window.onload = (function() {
+window.requestAnimFrame = (function(){
+  return  window.requestAnimationFrame       ||
+          window.webkitRequestAnimationFrame ||
+          window.mozRequestAnimationFrame    ||
+          function( callback ){
+            window.setTimeout(callback, 1000 / 60);
+          };
+})();
+
+(function() {
 
   function Ball(x, y, radius, color) {
     this.init(x, y, radius, color);
@@ -10,8 +19,8 @@ window.onload = (function() {
     this.radius = radius;
     this.color = color;
 
-    this.verticalSpeed = Math.floor(Math.random() * 3) + 2;
-    this.horizontalSpeed = Math.floor(Math.random() * 3) + 2;
+    this.verticalSpeed = Math.floor(Math.random() * 3) + 1;
+    this.horizontalSpeed = Math.floor(Math.random() * 3) + 1;
 
     // up === true
     // down === false
@@ -62,7 +71,12 @@ window.onload = (function() {
 
       BouncingBalls.bindEvents();
 
-      setInterval(BouncingBalls.tick, 20);
+      BouncingBalls.startAnimateLoop();
+    },
+
+    startAnimateLoop: function() {
+      requestAnimFrame(BouncingBalls.startAnimateLoop);
+      BouncingBalls.tick();
     },
 
     bindEvents: function() {
