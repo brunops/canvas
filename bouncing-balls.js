@@ -56,24 +56,26 @@ window.requestAnimFrame = (function(){
   // Inherit from Ball
   Particle.prototype = new Ball();
 
-  Particle.prototype.init = function(x, y, radius, color, createdAt) {
+  Particle.prototype.init = function(x, y, radius, color) {
     Ball.prototype.init.call(this, x, y, radius, color);
 
-    this.createdAt = createdAt || Date.now();
+    this.horizontalSpeed = (Math.floor(Math.random() * 1500)) / 1000;
+    this.verticalSpeed = (Math.floor(Math.random() * 1300)) / 1000;
+    this.horizontalSpeed *= Math.floor(Math.random() * 2) === 1 ? 1 : -1;
+    this.verticalSpeed *= Math.floor(Math.random() * 2) === 1 ? 1 : -1;
   };
 
   // Define some constants
   // Particles are subjected to a bit more physics
-  Particle.prototype.gravity = 1.3;
-  Particle.prototype.horizontalSpeedDecreaseRate = 0.3;
-  Particle.prototype.lifespan = 1000;
+  Particle.prototype.gravity = 0.05;
+  Particle.prototype.horizontalSpeedDecreaseRate = 0.98;
 
   Particle.prototype.tick = function() {
     this.x = this.x + this.horizontalSpeed;
     this.y = this.y + this.verticalSpeed;
 
     this.horizontalSpeed *= this.horizontalSpeedDecreaseRate;
-    this.verticalSpeed *= this.gravity;
+    this.verticalSpeed += this.gravity;
   };
 
   var BouncingBalls = {
