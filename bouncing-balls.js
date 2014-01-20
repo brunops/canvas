@@ -183,7 +183,7 @@ window.requestAnimFrame = (function(){
       var ball = BouncingBalls.balls[index];
 
       for (var i = 0; i < BouncingBalls.particlesPerExplosion; i++) {
-        BouncingBalls.particles.push(new Particle(ball.x, ball.y, 1, ball.color));
+        BouncingBalls.particles.push(new Particle(ball.x, ball.y, 2, ball.color));
       }
 
       delete BouncingBalls.balls.splice(index, 1);
@@ -209,7 +209,7 @@ window.requestAnimFrame = (function(){
       var collided = false,
           distance = Math.sqrt(Math.pow(ball1.x - ball2.x, 2) + Math.pow(ball1.y - ball2.y, 2));
 
-      if (distance <= ball1.radius * 2) {
+      if (distance <= ball1.radius + ball2.radius) {
         collided = true;
       }
 
