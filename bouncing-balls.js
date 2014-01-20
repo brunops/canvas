@@ -22,13 +22,11 @@ window.requestAnimFrame = (function(){
     this.verticalSpeed = Math.floor(Math.random() * 3) + 1;
     this.horizontalSpeed = Math.floor(Math.random() * 3) + 1;
 
-    // up === true
-    // down === false
-    this.vertical = Math.floor(Math.random() * 2) === 1;
+    // up or down
+    this.verticalSpeed *= Math.floor(Math.random() * 2) === 1 ? 1 : -1;
 
-    // right ===  true
-    // left === false
-    this.horizontal = Math.floor(Math.random() * 2) === 1;
+    // left or right
+    this.horizontalSpeed *= Math.floor(Math.random() * 2) === 1 ? 1 : -1;
   };
 
   Ball.prototype.draw = function(context) {
@@ -40,16 +38,16 @@ window.requestAnimFrame = (function(){
   };
 
   Ball.prototype.invertVertical = function() {
-    this.vertical = !this.vertical;
+    this.verticalSpeed *= -1;
   };
 
   Ball.prototype.invertHorizontal = function() {
-    this.horizontal = !this.horizontal;
+    this.horizontalSpeed *= -1;
   };
 
   Ball.prototype.tick = function() {
-    this.x = this.x + (this.horizontal ? this.horizontalSpeed : - this.horizontalSpeed);
-    this.y = this.y + (this.vertical ? - this.verticalSpeed : this.verticalSpeed);
+    this.x = this.x + this.horizontalSpeed;
+    this.y = this.y + this.verticalSpeed;
   };
 
   var BouncingBalls = {
