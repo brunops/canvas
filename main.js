@@ -5,9 +5,13 @@ var TowerAnimation = {
 
     this.updateProportionalSizes();
 
-    this.tower = new TowerOfHanoi(3);
+    this.tower = new TowerOfHanoi(4);
+
+    // no strokes
+    this.context.strokeStyle = 'black';
 
     this.drawTowers();
+    this.drawDisks();
   },
 
   updateProportionalSizes: function() {
@@ -19,6 +23,9 @@ var TowerAnimation = {
     // Four in total, 2 between towers and 1 before and after the towers
     // The "magic number" comes from 600 / 15 = 40 to keep the proportions
     this.spaceUnit = this.width / 40;
+
+    // Little spacing between disks, so they're not glued (5px in the example)
+    this.spaceBetweenDisks = this.spaceUnit / 3;
 
     // Towers base
     this.towersBaseHeight = this.spaceUnit * 1.5;
@@ -36,6 +43,9 @@ var TowerAnimation = {
   },
 
   drawTowers: function() {
+    this.context.beginPath();
+    this.context.fillStyle = 'black';
+
     // Base
     this.context.rect(this.towersBaseX, this.towersBaseY, this.towersBaseWidth, this.towersBaseHeight);
     this.context.fill();
@@ -55,6 +65,52 @@ var TowerAnimation = {
       this.context.fill();
       this.context.stroke();
     }
+  },
+
+  drawDisks: function(towerState) {
+    towerState = [[4, 3, 2, 1], [1,3,2,3], [3,1,2]];
+    var diskSizes = this.getDiskSizes();
+
+    console.log(diskSizes);
+
+    this.context.beginPath();
+    for (var tower = 0; tower < towerState.length; tower++) {
+      for (var disk = 0; disk < towerState[tower].length; disk++) {
+
+        var diskWidth  = diskSizes[towerState[tower][disk] - 1],
+
+            diskX      = this.spaceUnit                     // left space
+                         + (this.biggestDisk * (tower + 1)) // previous towers max width
+                         - (this.biggestDisk / 2)           // centralize in tower
+                         - (diskWidth / 2)                  // centralize disk itself
+                         + (this.spaceUnit * tower),        // space between towers
+
+            diskHeight = this.spaceUnit,
+
+            diskY      = this.towersBaseY       // strats from towersBaseY
+                         - ((diskHeight + this.spaceBetweenDisks) * (disk + 1)); // go up the diskHeight plus its spacing according to is position in the tower
+
+        console.log(diskX, diskY, diskWidth, diskHeight);
+
+        // some blue
+        this.context.fillStyle = '#325FA2';
+        this.context.rect(diskX, diskY, diskWidth, diskHeight);
+        this.context.fill();
+        this.context.stroke();
+      }
+    }
+  },
+
+  getDiskSizes: function() {
+    // Because Tower may have different total number of disks
+    // Their sizes must be proportionally calculated
+    var diskSizes = [];
+
+    for (var i = 0; i < this.tower.totalDisks; ++i) {
+      diskSizes.push((this.biggestDisk / this.tower.totalDisks) * (i + 1));
+    }
+
+    return diskSizes;
   }
 };
 
