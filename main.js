@@ -16,7 +16,7 @@ var TowerAnimation = {
 
   updateProportionalSizes: function() {
     this.width = this.canvas.width = this.canvas.clientWidth;
-    this.height = this.canvas.height = (this.canvas.clientWidth / 5) * 2;
+    this.height = this.canvas.height = (this.canvas.clientWidth / 6) * 2;
 
     // Space between towers
     // In a width of 600, biggest disks have 180px and each spacing 15px
