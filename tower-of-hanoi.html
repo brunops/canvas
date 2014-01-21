@@ -9,21 +9,21 @@
       text-align: center;
     }
 
-    .canvas-wrapper {
-      margin: 0 auto;
+    #canvas {
+      display: block;
       border: 3px solid black;
-      width: 600px;
-      height: 300px;
+      margin: 0 auto;
+      width: 70%;
+      height: 50%;
     }
   </style>
 </head>
 <body>
   <h1>Tower of Hanoi</h1>
 
-  <div class="canvas-wrapper">
-    <canvas id="canvas" width="600" height="300"></canvas>
-  </div>
+  <canvas id="canvas"></canvas>
 
   <script src="tower-of-hanoi.js"></script>
+  <script src="main.js"></script>
 </body>
 </html>
