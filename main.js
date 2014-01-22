@@ -5,18 +5,40 @@ var TowerAnimation = {
 
     this.updateProportionalSizes();
 
-    this.tower = new TowerOfHanoi(4);
+    this.tower = new TowerOfHanoi(7);
 
     // no strokes
     this.context.strokeStyle = 'black';
 
+    this.animate();
+  },
+
+  animate: function() {
+    var steps = this.tower.getSolutionSteps();
+
+    this.processSteps(steps);
+  },
+
+  processSteps: function(steps) {
+    var towerState = steps.shift();
+
+    if (towerState) {
+      setTimeout(function() {
+        TowerAnimation.draw(towerState);
+        TowerAnimation.processSteps(steps);
+      }, 300);
+    }
+  },
+
+  draw: function(towerState) {
+    this.context.clearRect(0, 0, this.width, this.height);
     this.drawTowers();
-    this.drawDisks();
+    this.drawDisks(towerState);
   },
 
   updateProportionalSizes: function() {
     this.width = this.canvas.width = this.canvas.clientWidth;
-    this.height = this.canvas.height = (this.canvas.clientWidth / 6) * 2;
+    this.height = this.canvas.height = (this.canvas.clientWidth / 6) * 3;
 
     // Space between towers
     // In a width of 600, biggest disks have 180px and each spacing 15px
@@ -25,7 +47,7 @@ var TowerAnimation = {
     this.spaceUnit = this.width / 40;
 
     // Little spacing between disks, so they're not glued (5px in the example)
-    this.spaceBetweenDisks = this.spaceUnit / 3;
+    this.spaceBetweenDisks = this.spaceUnit / 2.8;
 
     // Towers base
     this.towersBaseHeight = this.spaceUnit * 1.5;
@@ -68,7 +90,6 @@ var TowerAnimation = {
   },
 
   drawDisks: function(towerState) {
-    towerState = [[4, 3, 2, 1], [1,3,2,3], [3,1,2]];
     var diskSizes = this.getDiskSizes();
 
     console.log(diskSizes);
