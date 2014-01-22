@@ -16,6 +16,10 @@
       width: 70%;
       height: 50%;
     }
+
+    .controls {
+      text-align: center;
+    }
   </style>
 </head>
 <body>
@@ -23,7 +27,13 @@
 
   <canvas id="canvas"></canvas>
 
+  <p class="controls">
+    <label for="total-disks">Number of disks</label>
+    <input type="text" id="total-disks" value="6">
+    <button id="update-disks-btn">Update</button>
+  </p>
+
   <script src="tower-of-hanoi.js"></script>
-  <script src="main.js"></script>
+  <script src="tower-animation.js"></script>
 </body>
 </html>

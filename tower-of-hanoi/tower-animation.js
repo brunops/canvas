@@ -139,5 +139,5 @@ var TowerAnimation = (function() {
   };
 })();
 
-TowerAnimation.init(document.getElementById('canvas'), 7);
+TowerAnimation.init(document.getElementById('canvas'), 6);
 TowerAnimation.animate();
