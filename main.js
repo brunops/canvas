@@ -1,13 +1,10 @@
 var TowerAnimation = (function() {
-
-  var canvas  = document.getElementById('canvas'),
-      context = canvas.getContext('2d'),
-      tower = new TowerOfHanoi(7);
-
-  updateProportionalSizes();
-
-  // no strokes
-  context.strokeStyle = 'black';
+  // Private variables
+  // Initialized in the exposed #init method
+  var canvas,
+      context,
+      tower,
+      initialized = false;
 
   function processSteps(steps) {
     var towerState = steps.shift();
@@ -121,12 +118,26 @@ var TowerAnimation = (function() {
   }
 
   return {
-    animate: function() {
-      var steps = tower.getSolutionSteps();
+    init: function(canvasElement, towerSize) {
+      canvas  = canvasElement;
+      context = canvas.getContext('2d');
+      tower   = new TowerOfHanoi(towerSize);
+      initialized = true;
 
-      processSteps(steps);
+      updateProportionalSizes();
+
+      // default strokes to black
+      context.strokeStyle = 'black';
+    },
+
+    animate: function() {
+      if (initialized) {
+        var steps = tower.getSolutionSteps();
+        processSteps(steps);
+      }
     },
   };
 })();
 
+TowerAnimation.init(document.getElementById('canvas'), 7);
 TowerAnimation.animate();
