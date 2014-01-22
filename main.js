@@ -91,7 +91,7 @@ var TowerAnimation = (function() {
             diskX      = spaceUnit                     // left space
                          + (biggestDisk * (tower + 1)) // previous towers max width
                          - (biggestDisk / 2)           // centralize in tower
-                         - (diskWidth / 2)                  // centralize disk itself
+                         - (diskWidth / 2)             // centralize disk itself
                          + (spaceUnit * tower),        // space between towers
 
             diskHeight = spaceUnit,
