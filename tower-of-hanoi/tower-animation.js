@@ -1,20 +1,27 @@
 var TowerAnimation = (function() {
   // Private variables
-  // Initialized in the exposed #init method
+  // Initialized in the exposed #animate method
   var canvas,
       context,
       tower,
-      initialized = false;
+      animationInterval;
 
   function processSteps(steps) {
     var towerState = steps.shift();
 
-    if (towerState) {
-      setTimeout(function() {
+    // Draw first step to start immediatly
+    draw(towerState);
+
+    animationInterval = setInterval(function() {
+      towerState = steps.shift();
+
+      if (towerState) {
         draw(towerState);
-        processSteps(steps);
-      }, 300);
-    }
+      }
+      else {
+        clearInterval(animationInterval);
+      }
+    }, 300);
   }
 
   function draw(towerState) {
@@ -118,23 +125,22 @@ var TowerAnimation = (function() {
   }
 
   return {
-    init: function(canvasElement, towerSize) {
+    animate: function(canvasElement, towerSize) {
       canvas  = canvasElement;
       context = canvas.getContext('2d');
       tower   = new TowerOfHanoi(towerSize);
       initialized = true;
 
-      updateProportionalSizes();
-
       // default strokes to black
       context.strokeStyle = 'black';
-    },
 
-    animate: function() {
-      if (initialized) {
-        var steps = tower.getSolutionSteps();
-        processSteps(steps);
-      }
-    },
+      updateProportionalSizes();
+
+      // Clear interval if already running
+      clearInterval(animationInterval);
+
+      var steps = tower.getSolutionSteps();
+      processSteps(steps);
+    }
   };
 })();

@@ -13,10 +13,15 @@
       input.value = defaultNumberOfDisks;
     }
 
-    TowerAnimation.init(document.getElementById('canvas'), newTotal);
-    TowerAnimation.animate();
+    startAnimation(newTotal);
 
     e.preventDefault();
   });
 
+  function startAnimation(totalDisks) {
+    TowerAnimation.animate(document.getElementById('canvas'), totalDisks);
+  }
+
+  // start immediatly
+  startAnimation(defaultNumberOfDisks);
 })();
