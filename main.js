@@ -1,138 +1,132 @@
-var TowerAnimation = {
-  init: function() {
-    this.canvas  = document.getElementById('canvas');
-    this.context = this.canvas.getContext('2d');
+var TowerAnimation = (function() {
 
-    this.updateProportionalSizes();
+  var canvas  = document.getElementById('canvas'),
+      context = canvas.getContext('2d'),
+      tower = new TowerOfHanoi(7);
 
-    this.tower = new TowerOfHanoi(7);
+  updateProportionalSizes();
 
-    // no strokes
-    this.context.strokeStyle = 'black';
+  // no strokes
+  context.strokeStyle = 'black';
 
-    this.animate();
-  },
-
-  animate: function() {
-    var steps = this.tower.getSolutionSteps();
-
-    this.processSteps(steps);
-  },
-
-  processSteps: function(steps) {
+  function processSteps(steps) {
     var towerState = steps.shift();
 
     if (towerState) {
       setTimeout(function() {
-        TowerAnimation.draw(towerState);
-        TowerAnimation.processSteps(steps);
+        draw(towerState);
+        processSteps(steps);
       }, 300);
     }
-  },
+  }
 
-  draw: function(towerState) {
-    this.context.clearRect(0, 0, this.width, this.height);
-    this.drawTowers();
-    this.drawDisks(towerState);
-  },
+  function draw(towerState) {
+    context.clearRect(0, 0, width, height);
+    drawTowers();
+    drawDisks(towerState);
+  }
 
-  updateProportionalSizes: function() {
-    this.width = this.canvas.width = this.canvas.clientWidth;
-    this.height = this.canvas.height = (this.canvas.clientWidth / 6) * 3;
+  function updateProportionalSizes() {
+    width = canvas.width = canvas.clientWidth;
+    height = canvas.height = (canvas.clientWidth / 6) * 3;
 
     // Space between towers
     // In a width of 600, biggest disks have 180px and each spacing 15px
     // Four in total, 2 between towers and 1 before and after the towers
     // The "magic number" comes from 600 / 15 = 40 to keep the proportions
-    this.spaceUnit = this.width / 40;
+    spaceUnit = width / 40;
 
     // Little spacing between disks, so they're not glued (5px in the example)
-    this.spaceBetweenDisks = this.spaceUnit / 2.8;
+    spaceBetweenDisks = spaceUnit / 2.8;
 
     // Towers base
-    this.towersBaseHeight = this.spaceUnit * 1.5;
-    this.towersBaseWidth  = this.width - (this.spaceUnit * 2);
-    this.towersBaseX = this.spaceUnit;
-    this.towersBaseY = this.height - this.spaceUnit - this.towersBaseHeight;
+    towersBaseHeight = spaceUnit * 1.5;
+    towersBaseWidth  = width - (spaceUnit * 2);
+    towersBaseX = spaceUnit;
+    towersBaseY = height - spaceUnit - towersBaseHeight;
 
     // Towers
-    this.towerWidth = this.spaceUnit;
-    this.towerHeight = this.height - (this.spaceUnit * 5);
+    towerWidth = spaceUnit;
+    towerHeight = height - (spaceUnit * 5);
 
     // Disks
     // remember the 180px? that's about it..
-    this.biggestDisk = this.spaceUnit * 12;
-  },
+    biggestDisk = spaceUnit * 12;
+  }
 
-  drawTowers: function() {
-    this.context.beginPath();
-    this.context.fillStyle = 'black';
+  function drawTowers() {
+    context.beginPath();
+    context.fillStyle = 'black';
 
     // Base
-    this.context.rect(this.towersBaseX, this.towersBaseY, this.towersBaseWidth, this.towersBaseHeight);
-    this.context.fill();
-    this.context.stroke();
+    context.rect(towersBaseX, towersBaseY, towersBaseWidth, towersBaseHeight);
+    context.fill();
+    context.stroke();
 
     // The 3 Towers
     for (var i = 0; i < 3; i++) {
-      var towerX = this.spaceUnit                 // left space
-                   + (this.biggestDisk * (i + 1)) // previous towers full width (disk size)
-                   - (this.biggestDisk / 2)       // centralize disk
-                   - (this.towerWidth / 2)        // centralize tower itself
-                   + (this.spaceUnit * i),        // space between towers
+      var towerX = spaceUnit                 // left space
+                   + (biggestDisk * (i + 1)) // previous towers full width (disk size)
+                   - (biggestDisk / 2)       // centralize disk
+                   - (towerWidth / 2)        // centralize tower itself
+                   + (spaceUnit * i),        // space between towers
 
-          towerY = this.spaceUnit * 4;            // leave space at the top for animation
+          towerY = spaceUnit * 4;            // leave space at the top for animation
 
-      this.context.rect(towerX, towerY, this.towerWidth, this.towerHeight);
-      this.context.fill();
-      this.context.stroke();
+      context.rect(towerX, towerY, towerWidth, towerHeight);
+      context.fill();
+      context.stroke();
     }
-  },
+  }
 
-  drawDisks: function(towerState) {
-    var diskSizes = this.getDiskSizes();
+  function drawDisks(towerState) {
+    var diskSizes = getDiskSizes();
 
-    console.log(diskSizes);
-
-    this.context.beginPath();
+    context.beginPath();
     for (var tower = 0; tower < towerState.length; tower++) {
       for (var disk = 0; disk < towerState[tower].length; disk++) {
 
         var diskWidth  = diskSizes[towerState[tower][disk] - 1],
 
-            diskX      = this.spaceUnit                     // left space
-                         + (this.biggestDisk * (tower + 1)) // previous towers max width
-                         - (this.biggestDisk / 2)           // centralize in tower
+            diskX      = spaceUnit                     // left space
+                         + (biggestDisk * (tower + 1)) // previous towers max width
+                         - (biggestDisk / 2)           // centralize in tower
                          - (diskWidth / 2)                  // centralize disk itself
-                         + (this.spaceUnit * tower),        // space between towers
+                         + (spaceUnit * tower),        // space between towers
 
-            diskHeight = this.spaceUnit,
+            diskHeight = spaceUnit,
 
-            diskY      = this.towersBaseY       // strats from towersBaseY
-                         - ((diskHeight + this.spaceBetweenDisks) * (disk + 1)); // go up the diskHeight plus its spacing according to is position in the tower
-
-        console.log(diskX, diskY, diskWidth, diskHeight);
+            diskY      = towersBaseY       // strats from towersBaseY
+                         - ((diskHeight + spaceBetweenDisks) * (disk + 1)); // go up the diskHeight plus its spacing according to is position in the tower
 
         // some blue
-        this.context.fillStyle = '#325FA2';
-        this.context.rect(diskX, diskY, diskWidth, diskHeight);
-        this.context.fill();
-        this.context.stroke();
+        context.fillStyle = '#325FA2';
+        context.rect(diskX, diskY, diskWidth, diskHeight);
+        context.fill();
+        context.stroke();
       }
     }
-  },
+  }
 
-  getDiskSizes: function() {
+  function getDiskSizes() {
     // Because Tower may have different total number of disks
     // Their sizes must be proportionally calculated
     var diskSizes = [];
 
-    for (var i = 0; i < this.tower.totalDisks; ++i) {
-      diskSizes.push((this.biggestDisk / this.tower.totalDisks) * (i + 1));
+    for (var i = 0; i < tower.totalDisks; ++i) {
+      diskSizes.push((biggestDisk / tower.totalDisks) * (i + 1));
     }
 
     return diskSizes;
   }
-};
 
-TowerAnimation.init();
+  return {
+    animate: function() {
+      var steps = tower.getSolutionSteps();
+
+      processSteps(steps);
+    },
+  };
+})();
+
+TowerAnimation.animate();
