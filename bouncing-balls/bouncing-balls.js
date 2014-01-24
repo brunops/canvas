@@ -1,3 +1,8 @@
+/*
+ * Bouncing Balls, 2014
+ * Author: Bruno Sanches <brunopsanches@gmail.com>
+ * MIT Licensed
+ */
 window.requestAnimFrame = (function(){
   return  window.requestAnimationFrame       ||
           window.webkitRequestAnimationFrame ||

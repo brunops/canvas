@@ -1,3 +1,8 @@
+/*
+ * Animated Tower of Hanoi solution, 2014
+ * Author: Bruno Sanches <brunopsanches@gmail.com>
+ * MIT Licensed
+ */
 var TowerAnimation = (function() {
   // Private variables
   // Initialized in the exposed #animate method

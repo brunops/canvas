@@ -1,3 +1,8 @@
+/*
+ * Tower of Hanoi solution, 2014
+ * Author: Bruno Sanches <brunopsanches@gmail.com>
+ * MIT Licensed
+ */
 function TowerOfHanoi(totalDisks) {
   this.init(totalDisks);
 }
