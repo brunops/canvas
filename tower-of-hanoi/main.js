@@ -52,7 +52,6 @@
 
   function startAnimation(totalDisks) {
     var tower = new TowerOfHanoi(totalDisks);
-    console.log(tower)
     TowerAnimation.animate(document.getElementById('canvas'), tower);
   }
 
