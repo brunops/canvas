@@ -1,3 +1,4 @@
+/* global TowerOfHanoi:false, TowerAnimation:false */
 (function() {
   'use strict';
 
