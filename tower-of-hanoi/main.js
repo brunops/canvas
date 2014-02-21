@@ -1,9 +1,10 @@
 (function() {
+  'use strict';
+
   var defaultNumberOfDisks = 6;
 
   var updateButton = document.getElementById('update-disks-btn'),
       input        = document.getElementById('total-disks'),
-      controls     = document.getElementById('controls'),
       errorMsg     = document.getElementById('error-msg');
 
   updateButton.addEventListener('click', function(e) {
@@ -50,7 +51,9 @@
   }
 
   function startAnimation(totalDisks) {
-    TowerAnimation.animate(document.getElementById('canvas'), totalDisks);
+    var tower = new TowerOfHanoi(totalDisks);
+    console.log(tower)
+    TowerAnimation.animate(document.getElementById('canvas'), tower);
   }
 
   // start immediatly
