@@ -6,7 +6,7 @@ Planets simulation, code from "Pro JavaScript Techniques" book.
 
 This project is using [beefy](http://didact.us/beefy/) for development. In order to run it, type:
 
-``` js
-beefy app.js --index=index.html --live
+``` bash
+$ beefy app.js --index=index.html --live
 ```
 
