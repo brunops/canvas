@@ -2,12 +2,35 @@
   <head>
     <title>Planets</title>
 
+    <style type="text/css">
+      body {
+        background: #000;
+      }
+
+      #planets {
+        display: none;
+      }
+
+      #sun {
+        width: 30px;
+        height: 30px;
+      }
+    </style>
+
   </head>
 
   <body>
+    <canvas id="canvas" height="300" width="300"></canvas>
 
-    Helloooo
+    <div id="planets">
+      <img src="sun.png" id="sun" />
+      <img src="moon.png" id="moon" />
+      <img src="earth.png" id="earth" />
+    </div>
 
+
+    <script src="app.js"></script>
   </body>
 
 </html>
+
